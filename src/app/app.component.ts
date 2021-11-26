@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  like = '';
   constructor() {}
+
+  onLogout(){
+    console.log('logout...');
+  }
 }

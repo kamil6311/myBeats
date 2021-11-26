@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar style="text-align: center;">
+    <ion-icon style="font-size: 20px;" name="build-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item *ngIf="!musicSelected.fav" style="font-size: 15px;" lines="none" (click)="musicAddFav()" button >
+    <ion-icon slot="start" name="heart-outline" style="height: 18px;text-align: center;"></ion-icon>
+    <label>Ajouter aux favoris</label>
+</ion-item>
+<ion-item *ngIf="musicSelected.fav" style="font-size: 15px;" lines="none" (click)="musicRemoveFav()" button>
+  <ion-icon color="danger" slot="start" name="heart" style="height: 18px;text-align: center;"></ion-icon>
+  <label>Retirer des favoris</label>
+</ion-item>
+<ion-item style="font-size: 15px;" lines="none" (click)="musicAddPlaylist()" button>
+  <ion-icon slot="start" name="add-outline" style="height: 18px;text-align: center;"></ion-icon>
+  <label>Ajouter à une playlist</label>
+</ion-item>
+<ion-item style="font-size: 15px;" lines="none" (click)="musicDelete()" button>
+  <ion-icon  color="danger" slot="start" name="trash-outline" style="height: 18px;text-align: center;"></ion-icon>
+  <label style="color: red;">Supprimer</label>
+  </ion-item>
+</ion-content>
