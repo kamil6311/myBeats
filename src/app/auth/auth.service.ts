@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -27,14 +28,16 @@ export class AuthService{
   }
 
   get userId(){
-    return this._user.asObservable().pipe(map(user => {
-      if(user){
-        return user.id;
-      }
-      else{
-        return null;
-      }
-    }));
+    return this._user.asObservable().pipe(
+      map(user => {
+        if(user){
+          return user.id;
+        }
+        else{
+          return null;
+        }
+      }),
+    );
   }
 
   login(email: string, password: string){

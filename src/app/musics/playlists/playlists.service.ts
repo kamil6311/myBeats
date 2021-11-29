@@ -19,6 +19,7 @@ export class PlaylistsService{
     150,
     'https://media.gettyimages.com/photos/cars-parked-on-road-by-buildings-picture-id652955141?k=20&m=652955141&s=612x612&w=0&h=KDOjGukrs31iWhoyxNryhzjQ7mNbntwjgg3kQ2tuwpc=',
     true,
+    'kams'
   );
 
   m2 = new Music(
@@ -28,6 +29,7 @@ export class PlaylistsService{
       111,
       'https://media.gettyimages.com/photos/cars-parked-on-road-by-buildings-picture-id652955141?k=20&m=652955141&s=612x612&w=0&h=KDOjGukrs31iWhoyxNryhzjQ7mNbntwjgg3kQ2tuwpc=',
       false,
+      'kams'
   );
   private mMusics: Array<Music>;
   private mMusicSub: Subscription;
@@ -57,9 +59,7 @@ export class PlaylistsService{
   }
 
   getMusics(){
-
   }
-
 
   get playlists(){
     return this.mPlaylists.asObservable();

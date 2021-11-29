@@ -66,8 +66,11 @@ export class EditMusicPage implements OnInit,OnDestroy {
   }
 
   onValidate(){
-    this.mMusicService.editMusic(this.music, this.musicForm.value.title, this.musicForm.value.artist, this.musicForm.value.bpm, this.musicForm.value.img, this.musicForm.value.fav).subscribe();
-    this.navigateBack();
+    this.mMusicService.editMusic(this.music, this.musicForm.value.title, this.musicForm.value.artist, this.musicForm.value.bpm, this.musicForm.value.img, this.musicForm.value.fav).subscribe(
+      () => {
+        this.navigateBack();
+      }
+    );
 
   }
 

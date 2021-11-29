@@ -5,6 +5,7 @@ export class Music{
     public artist: string,
     public bpm: number,
     public img: string,
-    public fav: boolean
+    public fav: boolean,
+    public userId: string
   ){}
 }

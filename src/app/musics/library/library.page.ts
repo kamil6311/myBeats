@@ -4,12 +4,13 @@ import { MusicService } from '../musics.service';
 import { fromEvent, Subscription } from 'rxjs';
 
 import { Component } from '@angular/core';
-import { IonSearchbar, PopoverController } from '@ionic/angular';
+import { IonSearchbar, ModalController, PopoverController } from '@ionic/angular';
 
 import { PopOverPage } from 'src/app/components/pop-over/pop-over.page';
 import { SearchbarChangeEventDetail, SegmentChangeEventDetail } from '@ionic/core';
 import { last } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
+import { NewMusicPage } from './new-music/new-music.page';
 
 
 @Component({
@@ -34,8 +35,9 @@ export class LibraryPage implements OnInit, OnDestroy {
 
   constructor(private mMusicService: MusicService,
     private mPopOverCtrl: PopoverController,
-    private mRouter: Router
-    ) { }
+    private mRouter: Router,
+    private mModalCtrl: ModalController
+  ) { }
 
 
   ngOnInit() {
@@ -107,5 +109,19 @@ export class LibraryPage implements OnInit, OnDestroy {
       this.musicSearch = musics;
       this.musics = this.musicSearch;
     });
+  }
+
+  onAddMusicClick(){
+    // this.mModalCtrl.create({component: NewMusicPage})
+    // .then(modal => {
+    //   modal.present();
+    //   return modal.onDidDismiss();
+    // }).then(res => {
+    //   if(res.role === 'confirm'){
+    //     const data = res.data.playlistData;
+    //     console.log(data);
+    //   }
+    // });
+    this.mRouter.navigateByUrl('/musics/tabs/library/newMusic');
   }
 }

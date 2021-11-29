@@ -5,16 +5,23 @@
 </ion-header>
 
 <ion-content>
-<form [formGroup]="authForm">
-  <ion-item>
-    <ion-label position="floating">Email</ion-label>
-    <ion-input formControlName="email"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" formControlName="password"></ion-input>
-  </ion-item>
-  <ion-button (click)="onLogin()" >Login</ion-button>
-  <ion-button (click)="onSignup()">Signup</ion-button>
-</form>
+  <ion-grid style="text-align: center;">
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <form [formGroup]="authForm">
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+          <br><br>
+          <ion-button (click)="onLogin()" >Login</ion-button>
+          <ion-button (click)="onSignup()">Signup</ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -12,7 +12,6 @@ export class NewPlaylistPage implements OnInit {
 
   constructor(
     private mModal: ModalController
-
   ) { }
 
   ngOnInit() {
@@ -29,9 +28,6 @@ export class NewPlaylistPage implements OnInit {
   }
 
   onValidate(){
-    console.log(this.pForm.value.title);
-    console.log(this.pForm.value.img);
-
     this.mModal.dismiss({
       playlistData: {
         title: this.pForm.value.title,

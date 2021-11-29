@@ -3,50 +3,66 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { Music } from './music.model';
-import {take, map, tap} from 'rxjs/operators';
+import {take, map, tap, switchMap, concatMap} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth/auth.service';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+
+
+interface beatsData{
+  artist: string;
+  bpm: number;
+  fav: boolean;
+  id: string;
+  img: string;
+  title: string;
+  userId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MusicService {
+  private mMusics = new BehaviorSubject<Music[]>([]);
 
-
-  private mMusics = new BehaviorSubject<Music[]>([
-    new Music(
-      'm1',
-      'musique1',
-      'Kams',
-      150,
-      'https://media.gettyimages.com/photos/cars-parked-on-road-by-buildings-picture-id652955141?k=20&m=652955141&s=612x612&w=0&h=KDOjGukrs31iWhoyxNryhzjQ7mNbntwjgg3kQ2tuwpc=',
-      true,
-      ),
-      new Music(
-      'm2',
-      '2musique',
-      'Kams',
-      111,
-      'https://media.gettyimages.com/photos/cars-parked-on-road-by-buildings-picture-id652955141?k=20&m=652955141&s=612x612&w=0&h=KDOjGukrs31iWhoyxNryhzjQ7mNbntwjgg3kQ2tuwpc=',
-      false
-      )
-  ]);
-
-
-  constructor(){
+  constructor(private httpClient: HttpClient, private authService: AuthService, public afDB: AngularFireDatabase,public afSG: AngularFireStorage){
+    this.fetchBeats().subscribe();
   }
 
-
+  fetchBeats(): Observable<any>{
+    return this.authService.userId.pipe(
+      switchMap(userId => {
+        if(!userId){
+          console.error('user not found');
+        }
+        return this.httpClient.get<{[key: string]: beatsData}>(`https://musics-53932-default-rtdb.europe-west1.firebasedatabase.app/beats.json?orderBy="userId"&equalTo="${userId}"`);
+      }),
+      map(resData => {
+        const musics = [];
+        for(const key in resData){
+          if(resData.hasOwnProperty(key)){
+            musics.push(new Music(key, resData[key].title, resData[key].artist,resData[key].bpm,resData[key].img,resData[key].fav,resData[key].userId));
+          }
+        }
+        return musics;
+      }),
+      tap(musics => {
+        this.mMusics.next(musics);
+      })
+    );
+  }
 
   get musics(){
     return this.mMusics.asObservable();
   }
 
-
-
   getMusic(musicId: string){
-    return this.musics.pipe(
+    return this.mMusics.pipe(
       take(1),
+      tap(musics => console.log(musics)),
       map(musics => ({...musics.find(m => m.id === musicId)}))
     );
   }
@@ -72,13 +88,16 @@ export class MusicService {
   }
 
   editMusic(oldMusic: Music, title: string, artist: string, bpm: number, img: string, fav: boolean){
-    const newMusic = new Music(oldMusic.id, title, artist, bpm, img, fav);
+    let updatedMusics: Music[];
     return this.musics.pipe(
       take(1),
-      tap(musics => {
+      switchMap(musics => {
+        const newMusic = new Music(oldMusic.id, title, artist, bpm, img, fav, oldMusic.userId);
         const index = musics.findIndex(m => m.id === newMusic.id);
-        const updatedMusics = [...musics];
+        updatedMusics = [...musics];
         updatedMusics[index] = newMusic;
+        return this.httpClient.put(`https://musics-53932-default-rtdb.europe-west1.firebasedatabase.app/beats/${oldMusic.id}.json`, {...newMusic,  id: null});
+      }), tap(() => {
         this.mMusics.next(updatedMusics);
       })
     );
@@ -96,5 +115,21 @@ export class MusicService {
     );
   }
 
+  newMusic(title: string, artist: string, bpm: number, img: string, fav: boolean): Observable<any>{
+    return this.authService.userId.pipe(
+      concatMap((userid: string) => {
+          const newMusic = new Music('jsd', title, artist, bpm, img, fav, userid);
+          return this.httpClient.post('https://musics-53932-default-rtdb.europe-west1.firebasedatabase.app/beats.json', {...newMusic, id: null});
+        }
+      )
+    );
+  }
 
+  getBeatStorage(musicTitle: string): Observable<any>{
+    return this.afSG.ref(`/beats/${musicTitle}.mp3`).getDownloadURL();
+  }
+
+  putBeatStorage(musicFile: File, fileName: string): Observable<any>{
+    return from(this.afSG.ref(`/beats/${fileName}`).put(musicFile));
+  }
 }
