@@ -32,7 +32,8 @@
                 </ion-button>
                </ion-buttons>
                 <ion-avatar slot="start" class="music-thumbnail">
-                  <ion-img [src]="music.img"></ion-img>
+                  <ion-img *ngIf="music.img" [src]="music.img"></ion-img>
+                  <img *ngIf="!music.img" src="assets/icon/music2.png">
                 </ion-avatar>
                 <ion-label>
                   <h2>{{music.title}}</h2>

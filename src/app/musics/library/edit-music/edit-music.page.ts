@@ -44,19 +44,15 @@ export class EditMusicPage implements OnInit,OnDestroy {
     });
 
     this.musicForm = new FormGroup({
-      title: new FormControl(this.music.title,{
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
       artist: new FormControl(this.music.artist,{
-        updateOn: 'blur',
+        updateOn: 'change',
         validators: [Validators.required]
       }),
       img: new FormControl(this.music.img,{
-        updateOn: 'blur',
+        updateOn: 'change',
       }),
       bpm: new FormControl(this.music.bpm,{
-        updateOn:'blur',
+        updateOn:'change',
         validators: [Validators.required]
       }),
       fav: new FormControl(this.music.fav,{
@@ -66,7 +62,7 @@ export class EditMusicPage implements OnInit,OnDestroy {
   }
 
   onValidate(){
-    this.mMusicService.editMusic(this.music, this.musicForm.value.title, this.musicForm.value.artist, this.musicForm.value.bpm, this.musicForm.value.img, this.musicForm.value.fav).subscribe(
+    this.mMusicService.editMusic(this.music, this.music.title, this.musicForm.value.artist, this.musicForm.value.bpm, this.musicForm.value.img, this.musicForm.value.fav).subscribe(
       () => {
         this.navigateBack();
       }

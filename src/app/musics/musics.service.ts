@@ -2,14 +2,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable max-len */
-import { Injectable } from '@angular/core';
+import { Injectable, Pipe } from '@angular/core';
 import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { Music } from './music.model';
 import {take, map, tap, switchMap, concatMap} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { AngularFireStorage, } from '@angular/fire/compat/storage';
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { UploadTask } from '@angular/fire/compat/storage/interfaces';
 
 
 interface beatsData{
@@ -62,7 +64,6 @@ export class MusicService {
   getMusic(musicId: string){
     return this.mMusics.pipe(
       take(1),
-      tap(musics => console.log(musics)),
       map(musics => ({...musics.find(m => m.id === musicId)}))
     );
   }
@@ -129,7 +130,11 @@ export class MusicService {
     return this.afSG.ref(`/beats/${musicTitle}.mp3`).getDownloadURL();
   }
 
-  putBeatStorage(musicFile: File, fileName: string): Observable<any>{
-    return from(this.afSG.ref(`/beats/${fileName}`).put(musicFile));
+  putBeatStorage(musicFile: File, fileName: string){
+    const storage = getStorage();
+    const storageRef = ref(storage, `beats/${fileName}`);
+    return uploadBytesResumable(storageRef, musicFile);
+
+    //return from(this.afSG.ref(`/beats/${fileName}`).put(musicFile));
   }
 }

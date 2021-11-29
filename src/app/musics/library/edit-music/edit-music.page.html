@@ -19,7 +19,8 @@
       <ion-grid>
         <ion-row>
           <ion-col size-sm="6" offset-sm="3">
-              <ion-img [src]="music.img"></ion-img>
+              <ion-img [src]="music.img" *ngIf="music.img" ></ion-img>
+              <img *ngIf="!music.img" src="assets/icon/music2.png" >
               <ion-input formControlName="img"></ion-input>
           </ion-col>
         </ion-row>
@@ -28,8 +29,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Titre</ion-label>
-            <ion-input formControlName='title'></ion-input>
+            <ion-label color="primary">{{music.title}}</ion-label>
           </ion-item>
         </ion-col>
       </ion-row>

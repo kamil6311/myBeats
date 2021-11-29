@@ -46,7 +46,6 @@ export class MusicDetailPage implements OnInit,OnDestroy {
       concatMap(() =>
         this.mMusicService.getBeatStorage(this.music.title).pipe(
           map(file => {
-              console.log(file);
               this.file = this.media.create(file);
           }),
         )
