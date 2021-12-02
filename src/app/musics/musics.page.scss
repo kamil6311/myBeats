@@ -4,3 +4,8 @@ div{
   display: flex;
   justify-content: flex-start;
 }
+
+ion-content{
+  //overflow: hidden;
+  position: fixed;
+}
