@@ -1,0 +1,17 @@
+:host{
+  left: 0;
+  position: absolute;
+  top: 78%;
+  right: 0;
+}
+
+.content {
+  display: flex;
+  min-height: 600px;
+}
+
+ion-card{
+  margin: 0px;
+  overflow: hidden;
+}
+

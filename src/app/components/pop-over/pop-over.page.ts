@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController, NavParams, PopoverController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
+import { concatMap, switchMap } from 'rxjs/operators';
 import { Music } from 'src/app/musics/music.model';
 import { MusicService } from 'src/app/musics/musics.service';
 import { AddMusicToPlaylistComponent } from 'src/app/musics/playlists/add-music-to-playlist/add-music-to-playlist.component';
@@ -26,14 +27,15 @@ export class PopOverPage implements OnInit,OnDestroy {
   private mPlaylistservice: PlaylistsService,
   private mModalCtrl: ModalController
   ) {
-  this.musicId = this.params.get('id');
-  this.mMusicSub = this.mMusicService.getMusic(this.musicId).subscribe(
-    music => {
-      this.musicSelected = music;
-    });
+
   }
 
   ngOnInit() {
+    this.musicId = this.params.get('id');
+    this.mMusicSub = this.mMusicService.getMusic(this.musicId).subscribe(
+      music => {
+        this.musicSelected = music;
+      });
   }
 
 
@@ -72,6 +74,13 @@ export class PopOverPage implements OnInit,OnDestroy {
   }
 
   musicDelete(){
+    this.mMusicService.removeMusic(this.musicSelected).pipe(
+
+      switchMap(() => this.mMusicService.fetchBeats()),
+      switchMap(() => this.mMusicService.removeBeatStorage(this.musicSelected.title))
+    ).subscribe(() => {
+      this.mPopOver.dismiss('deleteMusic');
+    });
   }
 
 

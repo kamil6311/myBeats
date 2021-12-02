@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { MusicsPageRoutingModule } from './musics-routing.module';
 
 import { MusicsPage } from './musics.page';
+import { PlayerComponent } from '../player/playerComponent/player/player.component';
+
 
 @NgModule({
   imports: [
@@ -15,6 +17,6 @@ import { MusicsPage } from './musics.page';
     IonicModule,
     MusicsPageRoutingModule
   ],
-  declarations: [MusicsPage]
+  declarations: [MusicsPage,PlayerComponent]
 })
 export class MusicsPageModule {}

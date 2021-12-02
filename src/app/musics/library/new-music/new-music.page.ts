@@ -79,11 +79,6 @@ export class NewMusicPage implements OnInit {
                 })).subscribe();
               }
             )
-            //.pipe(
-            //   tap(res => {
-            //     console.log(res);
-            //   })
-            // )
           )
         ).subscribe();
       });

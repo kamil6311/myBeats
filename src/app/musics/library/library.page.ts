@@ -11,6 +11,7 @@ import { SearchbarChangeEventDetail, SegmentChangeEventDetail } from '@ionic/cor
 import { last } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NewMusicPage } from './new-music/new-music.page';
+import { MusicPlayerService } from 'src/app/player/music-player.service';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class LibraryPage implements OnInit, OnDestroy {
   constructor(private mMusicService: MusicService,
     private mPopOverCtrl: PopoverController,
     private mRouter: Router,
-    private mModalCtrl: ModalController
+    private mModalCtrl: ModalController,
+    private mPlayerService: MusicPlayerService
   ) { }
 
 
@@ -69,12 +71,13 @@ export class LibraryPage implements OnInit, OnDestroy {
     }
   }
 
-  itemClicked(musicId: string){
+  itemClicked(music: Music){
     if(this.mbOptionClicked === true){
       return;
     }
     else{
-      this.mRouter.navigateByUrl('musics/tabs/library/'+ musicId);
+      //this.mRouter.navigateByUrl('musics/tabs/library/'+ music.id);
+      this.mPlayerService.setPlayingMusic(music);
     }
   }
 
@@ -95,11 +98,9 @@ export class LibraryPage implements OnInit, OnDestroy {
     if(dismissrole === 'favClosed'){
       if(this.lesMusics.filter(m => m.fav === true).length === 0){
           this.segment = 'all';
-        }
-      else{
-          this.segment = 'fav';
       }
     }
+
     this.mbOptionClicked = false;
   }
 
@@ -112,16 +113,6 @@ export class LibraryPage implements OnInit, OnDestroy {
   }
 
   onAddMusicClick(){
-    // this.mModalCtrl.create({component: NewMusicPage})
-    // .then(modal => {
-    //   modal.present();
-    //   return modal.onDidDismiss();
-    // }).then(res => {
-    //   if(res.role === 'confirm'){
-    //     const data = res.data.playlistData;
-    //     console.log(data);
-    //   }
-    // });
     this.mRouter.navigateByUrl('/musics/tabs/library/newMusic');
   }
 }

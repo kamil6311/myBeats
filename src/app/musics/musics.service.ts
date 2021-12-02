@@ -77,13 +77,14 @@ export class MusicService {
   musicTriggerFav(musicSelected: Music, fav: boolean){
     return this.mMusics.pipe(
       take(1),
-      tap(musics => {
+      concatMap(musics => {
         const updatedMusicIndex = musics.findIndex(music => music.id === musicSelected.id);
         const updatedMusics = [...musics];
         const oldMusic = updatedMusics[updatedMusicIndex];
         oldMusic.fav = fav;
         updatedMusics[updatedMusicIndex] = oldMusic;
         this.mMusics.next(updatedMusics);
+        return this.httpClient.put(`https://musics-53932-default-rtdb.europe-west1.firebasedatabase.app/beats/${oldMusic.id}.json`, {...oldMusic,  id: null});
       })
     );
   }
@@ -126,6 +127,10 @@ export class MusicService {
     );
   }
 
+  removeMusic(music: Music){
+    return this.httpClient.delete(`https://musics-53932-default-rtdb.europe-west1.firebasedatabase.app/beats/${music.id}.json`);
+  }
+
   getBeatStorage(musicTitle: string): Observable<any>{
     return this.afSG.ref(`/beats/${musicTitle}.mp3`).getDownloadURL();
   }
@@ -134,7 +139,11 @@ export class MusicService {
     const storage = getStorage();
     const storageRef = ref(storage, `beats/${fileName}`);
     return uploadBytesResumable(storageRef, musicFile);
-
-    //return from(this.afSG.ref(`/beats/${fileName}`).put(musicFile));
   }
+
+  removeBeatStorage(fileName: string): Observable<any>{
+    return this.afSG.ref(`/beats/${fileName}.mp3`).delete();
+  }
+
+
 }

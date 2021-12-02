@@ -1,0 +1,40 @@
+<ion-card>
+
+  <div *ngIf="isPlayerBig">
+    <ion-card-content class="content" >
+      <ion-label>AHAHDJZHDZJK</ion-label>
+      <ion-range color="danger" pin="true" ></ion-range>
+    </ion-card-content>
+  </div>
+
+  <div *ngIf="!isPlayerBig">
+    <ion-card-content class="content" *ngIf="isPlayerBig === false">
+      <ion-toolbar>
+        <ion-thumbnail slot="start" >
+          <ion-img *ngIf="currentMusic.img" [src]="currentMusic.img" #image></ion-img>
+          <img *ngIf="!currentMusic.img" src="assets/icon/music2.png">
+        </ion-thumbnail>
+        <ion-label class="title">{{currentMusic.title}}</ion-label>
+        <div slot="end">
+          <ion-buttons>
+            <ion-button (click)="onPlayClick()" *ngIf="!isPlaying">
+              <ion-icon name="play" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-button (click)="onPauseClick()" *ngIf="isPlaying">
+              <ion-icon name="pause" slot="icon-only"></ion-icon>
+            </ion-button>
+
+            <ion-button (click)="onBtnUpClick()">
+              <ion-icon name="chevron-up-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </div>
+      </ion-toolbar>
+    </ion-card-content>
+  </div>
+
+
+
+
+
+</ion-card>

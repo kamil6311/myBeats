@@ -62,7 +62,7 @@ export class MusicDetailPage implements OnInit,OnDestroy {
   }
 
   onPlay(){
-    this.file.play();
+    //this.file.play();
   }
 
   onPause(){
