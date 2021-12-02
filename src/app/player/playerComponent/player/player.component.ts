@@ -92,9 +92,6 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
         this.playCurrent();
       }
     });
-
-    //this.currentMusic = new Music('', '', '', 0, 'assets/icon/music2.png', false, '');
-
   }
 
   playCurrent(){

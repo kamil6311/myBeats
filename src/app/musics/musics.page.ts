@@ -34,12 +34,12 @@ export class MusicsPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.playerService.currentMusic.subscribe({
-      next: (music) => {
-        this.currentMusic = music;
-        this.playCurrent();
-      }
-    });
+    // this.playerService.currentMusic.subscribe({
+    //   next: (music) => {
+    //     this.currentMusic = music;
+    //     this.playCurrent();
+    //   }
+    // });
   }
 
   playCurrent(){
