@@ -120,7 +120,7 @@ export class MusicsPage implements OnInit {
     else{
       this.musicService.musics.subscribe(
         musics => {
-          this.playerService.setPlayingMusic(musics[0]);
+          this.playerService.setPlayingMusic(musics[Math.floor(Math.random() * ((musics.length-1) - 0 + 1) + 0)]);
         }
       );
     }

@@ -13,13 +13,12 @@
 
 
   <div class="container-title" >
-    <h3>{{currentMusic.title}}</h3>
+    <h4>{{currentMusic.title}}</h4>
     <p>{{currentMusic.artist}}</p>
-
   </div>
 
   <div class="container-range" >
-    <ion-range min="0" max="100" mode="md"></ion-range>
+    <ion-range min="0" max="100" mode="md" [(ngModel)]="position"></ion-range>
   </div>
 
   <div class="buttons">
@@ -40,7 +39,7 @@
     </ion-buttons>
 
     <ion-buttons>
-      <ion-button>
+      <ion-button (click)="onNext()">
         <ion-icon slot="icon-only" name="play-forward" ></ion-icon>
       </ion-button>
     </ion-buttons>
