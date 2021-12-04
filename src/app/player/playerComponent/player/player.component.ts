@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit,Renderer2, ViewChild } from '@angular/core';
+/* eslint-disable @angular-eslint/no-output-rename */
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit,Output,Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { Platform } from '@ionic/angular';
@@ -9,6 +10,8 @@ import { MusicService } from 'src/app/musics/musics.service';
 import { MusicPlayerService } from '../../music-player.service';
 import { GestureController } from '@ionic/angular';
 import {GestureConfig,Gesture} from '@ionic/core';
+import { EventEmitter } from '@angular/core';
+import { AuthService } from 'src/app/auth/auth.service';
 
 
 @Component({
@@ -17,8 +20,9 @@ import {GestureConfig,Gesture} from '@ionic/core';
   styleUrls: ['./player.component.scss'],
 })
 export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
-  @ViewChild('image', {static: false})
-  imageElement: ElementRef;
+  @ViewChild('drawer', {read: ElementRef}) drawer: ElementRef;
+  @Output('openStateChanged') openState: EventEmitter<boolean> = new EventEmitter();
+
 
 
   playClicked = false;
@@ -26,7 +30,8 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
   file: MediaObject;
   currentMusic: Music = null;
   gesture: Gesture;
-  isPlayerBig = false;
+  isPlayerOpen = false;
+  openHeight = 0;
 
 
   private musicId: string;
@@ -36,6 +41,8 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
     private router: Router,
     private musicService: MusicService,
     private playerService: MusicPlayerService,
+    private authService: AuthService,
+    private changeDetectorRef: ChangeDetectorRef,
     public media: Media,
     public platform: Platform,
     private gestureCtrl: GestureController,
@@ -46,50 +53,44 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
 
 
   async ngAfterViewInit(){
-    const options: GestureConfig = {
-      el: this.element.nativeElement,
-      direction: 'y',
-      gestureName: 'musicPlayerSwipe',
-      onStart: () => {
-        this.renderer.setStyle(this.element.nativeElement, 'transition', 'none');
-      },
-      onMove: ev => {
-        if(ev.deltaY < 0){
-          this.renderer.setStyle(this.element.nativeElement, 'transform', `translateY(${ev.deltaY}px)`);
-          //this.renderer.setStyle(this.imageElement.nativeElement, 'transform', 'size: 50px');
-        }
-        if(ev.deltaY < -50){
-          this.isPlayerBig = true;
-        }
-        if(ev.deltaY > -50){
-          this.isPlayerBig = false;
-        }
+    const drawer = this.drawer.nativeElement;
+    this.openHeight = (this.platform.height() / 100) * 70;
 
-        console.log(this.isPlayerBig);
+    const gesture = this.gestureCtrl.create({
+      el: drawer,
+      gestureName: 'musicPlayerSwipe',
+      direction: 'y',
+      onMove: ev => {
+        if(ev.deltaY < -this.openHeight){return;}
+        drawer.style.transform = `translateY(${ev.deltaY}px)`;
       },
       onEnd: ev => {
-        this.renderer.setStyle(this.element.nativeElement, 'transition', '0.4s ease-out');
-
-        if(ev.deltaY < -100){
-          this.renderer.setStyle(this.element.nativeElement, 'transform', `translateY(-500px)`);
+        if(ev.deltaY < -50 && !this.isPlayerOpen){
+          drawer.style.transition = '.3s ease-out';
+          drawer.style.transform = `translateY(${-this.openHeight}px)`;
+          this.openState.emit(true);
+          this.isPlayerOpen = true;
+        }else if(ev.deltaY > 50 && this.isPlayerOpen){
+          drawer.style.transition = '.3s ease-out';
+          drawer.style.transform = `translateY(${-this.openHeight}px)`;
+          this.openState.emit(false);
+          this.isPlayerOpen = false;
         }
-        else{
-          this.renderer.setStyle(this.element.nativeElement, 'transform', `translateY(0px)`);
-        }
-        console.log(this.isPlayerBig);
-
+        this.changeDetectorRef.detectChanges();
       },
-    };
+    });
 
-    this.gesture = await this.gestureCtrl.create(options);
-    this.gesture.enable();
+    gesture.enable(true);
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnInit() {
     this.playerService.playingMusic.subscribe({
       next: (music: Music) => {
         this.currentMusic = music;
-        this.playCurrent();
+        if(music.title){
+          this.playCurrent();
+        }
       }
     });
   }
@@ -108,10 +109,12 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
   }
 
   onPlayClick(){
-    this.isPlaying = true;
-
-    this.file.play();
+    if(this.currentMusic.title){
+      this.isPlaying = true;
+      this.file.play();
+    }
   }
+
   onPauseClick(){
     this.isPlaying = false;
     this.file.pause();
@@ -127,7 +130,7 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
   }
 
   onBtnUpClick(){
-    this.isPlayerBig = true;
+    this.togglePlayer();
   }
 
 
@@ -136,70 +139,21 @@ export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
       this.musicSub.unsubscribe();
     }
   }
+
+  togglePlayer(){
+    const drawer = this.drawer.nativeElement;
+    this.openState.emit(!this.openState);
+
+    if(this.isPlayerOpen){
+      drawer.style.transition = '.3s ease-out';
+      drawer.style.transform = '';
+      this.isPlayerOpen = false;
+      this.changeDetectorRef.detectChanges();
+    }else{
+      drawer.style.transition = '.3s ease-in';
+      drawer.style.transform = `translateY(${-this.openHeight}px)`;
+      this.isPlayerOpen = true;
+      this.changeDetectorRef.detectChanges();
+    }
+  }
 }
-
-
-/*
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit,Renderer2, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { Platform } from '@ionic/angular';
-import { of, Subscription } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
-import { Music } from 'src/app/musics/music.model';
-import { MusicService } from 'src/app/musics/musics.service';
-import { MusicPlayerService } from '../../music-player.service';
-import { GestureController } from '@ionic/angular';
-import {GestureConfig,Gesture} from '@ionic/core';
-
-
-@Component({
-  selector: 'app-player',
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss'],
-})
-export class PlayerComponent implements OnInit, AfterViewInit,OnDestroy {
-  currentMusic: Music = null;
-  isPlayerBig = false;
-  isPlaying = false;
-
-  constructor(private playerService: MusicPlayerService
-  ) {
-  }
-
-
-  async ngAfterViewInit(){
-  }
-
-  ngOnInit() {
-    this.playerService.playingMusic.subscribe({
-      next: (music: Music) => {
-        this.currentMusic = music;
-      }
-    });
-
-  }
-
-  playCurrent(){
-
-  }
-
-  onPlayClick(){
-
-  }
-  onPauseClick(){
-
-  }
-
-  onPlayerClick(){
-
-  }
-
-  onBtnUpClick(){
-
-  }
-
-
-  ngOnDestroy() {
-
-  }
-}*/

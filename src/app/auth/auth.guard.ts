@@ -21,6 +21,6 @@ export class AuthGuard implements CanLoad {
           this.mRouter.navigateByUrl('/auth');
         }
       })
-      );
+    );
   }
 }

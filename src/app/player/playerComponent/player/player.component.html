@@ -1,20 +1,21 @@
-<ion-card>
 
-  <div *ngIf="isPlayerBig">
-    <ion-card-content class="content" >
-      <ion-label>AHAHDJZHDZJK</ion-label>
-      <ion-range color="danger" pin="true" ></ion-range>
-    </ion-card-content>
+<div class="drawer" #drawer>
+
+  <div>
+    <ion-button fill="clear" expand="full" (click)="togglePlayer()" *ngIf="isPlayerOpen">
+      <div class="player-pull"></div>
+    </ion-button>
   </div>
 
-  <div *ngIf="!isPlayerBig">
-    <ion-card-content class="content" *ngIf="isPlayerBig === false">
-      <ion-toolbar>
-        <ion-thumbnail slot="start" >
-          <ion-img *ngIf="currentMusic.img" [src]="currentMusic.img" #image></ion-img>
-          <img *ngIf="!currentMusic.img" src="assets/icon/music2.png">
+  <div>
+      <ion-toolbar *ngIf="!isPlayerOpen">
+        <ion-thumbnail slot="start">
+          <ion-img  *ngIf="currentMusic.img" [src]="currentMusic.img" #image></ion-img>
+          <img  *ngIf="!currentMusic.img" src="assets/icon/music2.png">
         </ion-thumbnail>
-        <ion-label class="title">{{currentMusic.title}}</ion-label>
+        <div class="title">
+          <ion-label >{{currentMusic.title}}</ion-label>
+        </div>
         <div slot="end">
           <ion-buttons>
             <ion-button (click)="onPlayClick()" *ngIf="!isPlaying">
@@ -30,11 +31,5 @@
           </ion-buttons>
         </div>
       </ion-toolbar>
-    </ion-card-content>
   </div>
-
-
-
-
-
-</ion-card>
+</div>

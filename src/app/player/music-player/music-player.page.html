@@ -1,12 +1,51 @@
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <!-- <ion-grid size-sm="6" offset-sm="3">
-        <ion-avatar style="height: 350px; width: 350px; margin: auto;">
-          <ion-img [src]="music.img" *ngIf="music.img" style="padding: 0;"></ion-img>
-          <img *ngIf="!music.img" src="assets/icon/music2.png" style="padding: 0;">
-        </ion-avatar>
-      </ion-grid> -->
-    </ion-row>
-  </ion-grid>
+<ion-content class="drawer" #drawer >
+  <div>
+    <ion-button fill="clear" expand="full" (click)="togglePlayer()" >
+      <div class="player-pull"></div>
+    </ion-button>
+  </div>
+
+  <ion-card >
+      <ion-thumbnail class="img-container">
+        <img src="{{currentMusic.img}}">
+      </ion-thumbnail>
+  </ion-card>
+
+
+  <div class="container-title" >
+    <h3>{{currentMusic.title}}</h3>
+    <p>{{currentMusic.artist}}</p>
+
+  </div>
+
+  <div class="container-range" >
+    <ion-range min="0" max="100" mode="md"></ion-range>
+  </div>
+
+  <div class="buttons">
+
+    <ion-buttons>
+      <ion-button>
+        <ion-icon slot="icon-only" name="play-back" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons>
+      <ion-button (click)="onPlayClick()" *ngIf="!isPlaying">
+        <ion-icon slot="icon-only" name="play" ></ion-icon>
+      </ion-button>
+      <ion-button (click)="onPauseClick()" *ngIf="isPlaying">
+        <ion-icon slot="icon-only" name="pause" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons>
+      <ion-button>
+        <ion-icon slot="icon-only" name="play-forward" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </div>
+
+
 </ion-content>

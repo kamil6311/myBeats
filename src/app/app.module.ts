@@ -22,6 +22,9 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { Media } from '@ionic-native/media/ngx';
+import { PlayerComponent } from './player/playerComponent/player/player.component';
+import { MusicPlayerPageModule } from './player/music-player/music-player.module';
+
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAPxa3EWErubDi24ZGFaSQK2pijVYJuUiA',
@@ -37,7 +40,7 @@ const firebaseConfig = {
 @NgModule({
   declarations: [AppComponent,PopOverPage,AddMusicToPlaylistComponent, LikedDirective],
   entryComponents: [],
-  imports: [CommonModule,BrowserModule,HttpClientModule,FormsModule,ReactiveFormsModule, IonicModule.forRoot(), AppRoutingModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  imports: [CommonModule,BrowserModule,HttpClientModule,FormsModule,ReactiveFormsModule,MusicPlayerPageModule, IonicModule.forRoot(), AppRoutingModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: environment.production,
   // Register the ServiceWorker as soon as the app is stable
   // or after 30 seconds (whichever comes first).
@@ -49,5 +52,6 @@ const firebaseConfig = {
 ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Media],
   bootstrap: [AppComponent],
+
 })
 export class AppModule {}

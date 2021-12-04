@@ -31,7 +31,6 @@ export class MusicService {
   private mMusics = new BehaviorSubject<Music[]>([]);
 
   constructor(private httpClient: HttpClient, private authService: AuthService, public afDB: AngularFireDatabase,public afSG: AngularFireStorage){
-    this.fetchBeats().subscribe();
   }
 
   fetchBeats(): Observable<any>{

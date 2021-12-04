@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -29,7 +30,6 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   onLogout(){
-    console.log('logout...');
     this.mAuthService.logout();
   }
 }

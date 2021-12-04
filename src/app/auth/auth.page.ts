@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { MusicService } from '../musics/musics.service';
 
 @Component({
   selector: 'app-auth',
@@ -16,7 +17,7 @@ export class AuthPage implements OnInit {
   isLoading = false;
   isLogin = true;
 
-  constructor(private mAuthService: AuthService,private mRouter: Router, private loadingCtrl: LoadingController,private alertCtrl: AlertController) { }
+  constructor(private mAuthService: AuthService,private mRouter: Router, private loadingCtrl: LoadingController,private alertCtrl: AlertController, private musicService: MusicService) { }
 
   ngOnInit() {
     this.authForm = new FormGroup({
@@ -45,21 +46,25 @@ export class AuthPage implements OnInit {
         }
         authObs.subscribe(
           resData => {
-            console.log(resData);
-            this.isLoading = false;
-            loadingEl.dismiss();
-            this.mRouter.navigateByUrl('/musics/tabs/library');
+            loadingEl.message = 'Récupération des données...';
+            this.musicService.fetchBeats().subscribe(
+              () => {
+                this.isLoading = false;
+                loadingEl.dismiss();
+                this.mRouter.navigateByUrl('/musics/tabs/library');
+              }
+            );
           },
           errRes => {
             loadingEl.dismiss();
             const code = errRes.error.error.message;
-            let message = 'Could not sign you up, please try again.';
+            let message = `Erreur lors de l'authentification, veuillez réessayez`;
             if (code === 'EMAIL_EXISTS') {
-              message = 'This email address exists already!';
+              message = 'Un compte avec cette adresse existe déjà.';
             } else if (code === 'EMAIL_NOT_FOUND') {
-              message = 'E-Mail address could not be found.';
+              message = 'Addresse e-mail inconnue.';
             } else if (code === 'INVALID_PASSWORD') {
-              message = 'This password is not correct.';
+              message = 'Mot de passe incorrect.';
             }
             this.showAlert(message);
           }
@@ -94,9 +99,9 @@ export class AuthPage implements OnInit {
   private showAlert(message: string) {
     this.alertCtrl
       .create({
-        header: 'Authentication failed',
+        header: 'Authentication échouée',
         message: message,
-        buttons: ['Okay']
+        buttons: ['Ok']
       })
       .then(alertEl => alertEl.present());
   }

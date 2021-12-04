@@ -9,10 +9,7 @@ import { map, take, tap } from 'rxjs/operators';
 })
 export class AccountPage implements OnInit {
   subj = new BehaviorSubject<string[]>([
-    'test1',
-    'test2',
-    'test3',
-    'test4'
+
   ]);
 
   observer$ = this.subj;
